@@ -6,6 +6,11 @@ class Connection
 public:
 	Connection();
 	Connection(char*,char*,char*,char*,char*,char*);
+	void showInfo();
+	char* getSockfd();
+	void setPid(char*);
+	void setPname(char*);
+private:
 	char* proto;
 	char* local_addr;
 	char* local_port;

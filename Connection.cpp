@@ -28,18 +28,42 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 	sockfd=new char[size];
 	pid=new char[size];
 	pro_name=new char[size];
+	cout<<"p length"<<strlen(p)<<endl;
+	cout<<"la length"<<strlen(la)<<endl;
 	/*proto=p;
 	local_addr=la;
 	local_port=lp;
 	dst_addr=da;
 	dst_port=dp;
-	sockfd=s;
-	pid="";
-	pro_name="";*/
-	/*strcpy(proto,p);
+	sockfd=s;*/
+	//pid="";
+	//pro_name="";
+	strcpy(proto,p);
 	strcpy(local_addr,la);
 	strcpy(local_port,lp);
 	strcpy(dst_addr,da);
 	strcpy(dst_port,dp);
-	strcpy(sockfd,s);*/
+	strcpy(sockfd,s);
+}
+char* Connection::getSockfd()
+{
+	return sockfd;
+}
+void Connection::setPid(char* p)
+{
+	strcpy(pid,p);
+}
+void Connection::setPname(char* pn)
+{
+	strcat(pro_name,pn);
+}
+void Connection::showInfo()
+{
+	cout<<proto<<"\t\nLOCAL ADDR:"
+    <<local_addr<<":"<<local_port<<"\t\nDST ADDR: "
+    <<dst_addr<<":"<<dst_port<<"\t\nPID/NAME: "
+    //<<Conn[i].sockfd
+    <<pid<<"/"<<pro_name
+    <<"\n-----------------------------------"
+    <<endl;
 }
