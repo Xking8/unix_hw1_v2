@@ -13,7 +13,9 @@ public:
 private:
 	char* proto;
 	char* local_addr;
-	char* local_port;
+	//char* local_port;
+	long int local_port;
+
 	char* dst_addr;
 	char* dst_port;
 	char* sockfd;

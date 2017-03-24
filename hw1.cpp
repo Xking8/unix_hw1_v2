@@ -190,6 +190,8 @@ void finding_match(Connection *Conn, char* sfd, char* pid)
 				puts(arg);
 			  	Conn[i].setPname(arg);
 			  	Conn[i].setPname(" ");
+				if(arg[0]=='/')
+					break;
 			
 			}
 			free(arg);
