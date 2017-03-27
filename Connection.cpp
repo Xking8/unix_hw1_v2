@@ -27,7 +27,7 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 	proto=new char[size];
 	local_addr=new char[size];
 	//local_port=new char[size];
-	dst_addr=new char[size];
+	dst_addr=new char[128];
 	dst_port=new char[size];
 	sockfd=new char[size];
 	pid=new char[size];
@@ -79,8 +79,14 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 		}
 		
 		struct in6_addr dst_inaddr;
-		strcpy(da,"BACD0120000000000000000052965732");
-		//cout<<"la address:"<<la<<endl;
+		//strcpy(da,"BACD0120000000000000000052965732");
+	    char ip_str[128];
+		//cout<<"da address:"<<da<<endl;
+/*		char* pEnd;
+		dst_inaddr.s6_addr[3]=strtoll(da,&pEnd,16);
+		printf("printf:%d\n",dst_inaddr.s6_addr[3]);
+		cout<<"s6addr3= "<<dst_inaddr.s6_addr[3]<<endl;
+*/
 		if (sscanf(da,
 		    "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
 		    &dst_inaddr.s6_addr[3], &dst_inaddr.s6_addr[2], &dst_inaddr.s6_addr[1], &dst_inaddr.s6_addr[0],
@@ -88,9 +94,13 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 		    &dst_inaddr.s6_addr[11], &dst_inaddr.s6_addr[10], &dst_inaddr.s6_addr[9], &dst_inaddr.s6_addr[8],
 		    &dst_inaddr.s6_addr[15], &dst_inaddr.s6_addr[14], &dst_inaddr.s6_addr[13], &dst_inaddr.s6_addr[12]) == 16)
 		{
-		    inet_ntop(AF_INET6, &dst_inaddr, dst_addr, sizeof dst_addr);
-		    printf("ip=%s \n",dst_addr);
+		    //inet_ntop(AF_INET6, &dst_inaddr, dst_addr, sizeof dst_addr);
+		    inet_ntop(AF_INET6, &dst_inaddr, ip_str, sizeof ip_str);
+			printf("s6addr:%d %d %d\n",dst_inaddr.s6_addr[3],dst_inaddr.s6_addr[2],dst_inaddr.s6_addr[1]);
+		    printf("ip=%s \n",ip_str);
+			strcpy(dst_addr,ip_str);
 		}
+
 	}
 }
 char* Connection::getSockfd()
