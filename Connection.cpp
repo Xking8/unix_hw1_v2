@@ -115,13 +115,16 @@ void Connection::setPname(char* pn)
 {
 	strcat(pro_name,pn);
 }
-void Connection::showInfo()
+void Connection::showInfo(bool d,bool t,bool u)
 {
-	cout<<proto<<"\t\nLOCAL ADDR: "
-    <<local_addr<<":"<<local_port<<"\t\nDST ADDR: "
-    <<dst_addr<<":"<<dst_port<<"\t\nPID/NAME: "
-    //<<Conn[i].sockfd
-    <<pid<<"/ "<<pro_name
-    <<"\n-----------------------------------"
-    <<endl;
+	if(d || (t&&strstr(proto,"tcp")) ||   (u&&strstr(proto,"udp")) )
+	{
+		cout<<proto<<"\t\nLOCAL ADDR: "
+		<<local_addr<<":"<<local_port<<"\t\nDST ADDR: "
+		<<dst_addr<<":"<<dst_port<<"\t\nPID/NAME: "
+		//<<Conn[i].sockfd
+		<<pid<<"/ "<<pro_name
+		<<"\n-----------------------------------"
+		<<endl;
+	}
 }

@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <getopt.h>
 #include "Connection.h"
 
 using namespace std;
@@ -22,6 +23,9 @@ void finding_match(Connection*,char*,char*);
 void showConnInfo(Connection*,int);
 int conncount=0;//connection entry count
 int Matchcnt=0;
+bool default_flag=true;
+bool tcp_flag=false;
+bool udp_flag=false;
 int main(int argc, char* argv[])
 {
 	//Connection Conn[1000];
@@ -164,6 +168,38 @@ int main(int argc, char* argv[])
 	}
 	cout<<"sock count"<<sockcnt<<endl;
 	cout<<"mc"<<Matchcnt<<endl;
+
+	while(1)
+	{
+		int option_index=0;
+		static struct option long_options[]={
+			{"tcp", no_argument,0,'t'},
+			{"udp", no_argument,0,'u'},
+		};
+		int c = getopt_long(argc,argv,"tu",long_options,&option_index);
+		if(c==-1)
+			break;//break while
+		switch(c) {
+			case 't':
+				default_flag=false;
+				tcp_flag=true;
+				cout<<"tcptime"<<endl;
+				break;
+			case 'u':
+				default_flag=false;
+				udp_flag=true;
+				cout<<"udptime"<<endl;
+				break;
+		}
+	}
+
+	argc-=optind;
+	argv+=optind;
+	cout<<"optind:"<<optind<<" argc:"<<argc<<endl;
+	for(int i=0;i<argc;i++)
+	{
+		printf("argv[%d] = %s\n", optind + i, argv[i]);
+	}
 	showConnInfo(Conn,conncount);
 }
 void finding_match(Connection *Conn, char* sfd, char* pid)
@@ -209,7 +245,7 @@ void showConnInfo(Connection *Conn, int cnt)
 {
 	for(int i=0;i<cnt;i++)
 	{
-		Conn[i].showInfo();
+		Conn[i].showInfo(default_flag,tcp_flag,udp_flag);
 	}
 }
 

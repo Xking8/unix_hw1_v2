@@ -6,7 +6,7 @@ class Connection
 public:
 	Connection();
 	Connection(char*,char*,char*,char*,char*,char*);
-	void showInfo();
+	void showInfo(bool,bool,bool);
 	char* getSockfd();
 	void setPid(char*);
 	void setPname(char*);
