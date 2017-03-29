@@ -32,8 +32,8 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 	sockfd=new char[size];
 	pid=new char[size];
 	pro_name=new char[size];
-	cout<<"p length"<<strlen(p)<<endl;
-	cout<<"la length"<<strlen(la)<<endl;
+	//cout<<"p length"<<strlen(p)<<endl;
+	//cout<<"la length"<<strlen(la)<<endl;
 	/*proto=p;
 	local_addr=la;
 	local_port=lp;
@@ -49,16 +49,16 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 	strcpy(dst_port,dp);
 	strcpy(sockfd,s);
 //	char* tmpend;
-	cout<<"lp length:"<<strlen(lp)<<endl;
-	strcpy(la,"017AA8C0");
+	//cout<<"lp length:"<<strlen(lp)<<endl;
+	//strcpy(la,"017AA8C0");
 	local_port=strtol(lp,NULL,16);
 	if(!strcmp(proto,"tcp") || !strcmp(proto,"udp") )//ipv4
 	{
-		cout<<"in converting"<<endl;
+		//cout<<"in converting"<<endl;
 		struct in_addr local_inaddr;
 		local_inaddr.s_addr=(int)strtoll(la,NULL,16);
 		inet_ntop(AF_INET,&local_inaddr,local_addr,60);
-		cout<<"in converting"<<endl;
+		//cout<<"in converting"<<endl;
 
 		struct in_addr dst_inaddr;
 		dst_inaddr.s_addr=(int)strtoll(da,NULL,16);
@@ -67,17 +67,22 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 	else
 	{
 		struct in6_addr local_inaddr;
-		if (sscanf(la,
+		char ip_str2[128];
+		//cout<<"la "<<la<<endl;
+		int tmp;
+		if (tmp=sscanf(la,
 		    "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
 		    &local_inaddr.s6_addr[3], &local_inaddr.s6_addr[2], &local_inaddr.s6_addr[1], &local_inaddr.s6_addr[0],
 		    &local_inaddr.s6_addr[7], &local_inaddr.s6_addr[6], &local_inaddr.s6_addr[5], &local_inaddr.s6_addr[4],
 		    &local_inaddr.s6_addr[11], &local_inaddr.s6_addr[10], &local_inaddr.s6_addr[9], &local_inaddr.s6_addr[8],
 		    &local_inaddr.s6_addr[15], &local_inaddr.s6_addr[14], &local_inaddr.s6_addr[13], &local_inaddr.s6_addr[12]) == 16)
 		{
-		    inet_ntop(AF_INET6, &local_inaddr, local_addr, sizeof local_addr);
-		    printf("ip=%s \n",local_addr);
+			//cout<<"in here"<<endl;
+		    inet_ntop(AF_INET6, &local_inaddr, ip_str2, sizeof ip_str2);
+			strcpy(local_addr,ip_str2);
+		    //printf("local ip=%s \n",local_addr);
 		}
-		
+		//cout<<"tmp"<<tmp<<endl;
 		struct in6_addr dst_inaddr;
 		//strcpy(da,"BACD0120000000000000000052965732");
 	    char ip_str[128];
@@ -96,8 +101,8 @@ Connection::Connection(char* p, char* la, char* lp,  char* da, char* dp, char* s
 		{
 		    //inet_ntop(AF_INET6, &dst_inaddr, dst_addr, sizeof dst_addr);
 		    inet_ntop(AF_INET6, &dst_inaddr, ip_str, sizeof ip_str);
-			printf("s6addr:%d %d %d\n",dst_inaddr.s6_addr[3],dst_inaddr.s6_addr[2],dst_inaddr.s6_addr[1]);
-		    printf("ip=%s \n",ip_str);
+			//printf("s6addr:%d %d %d\n",dst_inaddr.s6_addr[3],dst_inaddr.s6_addr[2],dst_inaddr.s6_addr[1]);
+		    //printf("ip=%s \n",ip_str);
 			strcpy(dst_addr,ip_str);
 		}
 
@@ -115,16 +120,19 @@ void Connection::setPname(char* pn)
 {
 	strcat(pro_name,pn);
 }
-void Connection::showInfo(bool d,bool t,bool u)
+void Connection::showInfo(bool d,bool t,bool u,char* filter)
 {
 	if(d || (t&&strstr(proto,"tcp")) ||   (u&&strstr(proto,"udp")) )
 	{
+		if(!filter ||strstr(pro_name,filter) )
+		{
 		cout<<proto<<"\t\nLOCAL ADDR: "
 		<<local_addr<<":"<<local_port<<"\t\nDST ADDR: "
 		<<dst_addr<<":"<<dst_port<<"\t\nPID/NAME: "
-		//<<Conn[i].sockfd
+		<<sockfd
 		<<pid<<"/ "<<pro_name
 		<<"\n-----------------------------------"
 		<<endl;
+		}
 	}
 }

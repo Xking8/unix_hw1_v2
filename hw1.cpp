@@ -26,6 +26,7 @@ int Matchcnt=0;
 bool default_flag=true;
 bool tcp_flag=false;
 bool udp_flag=false;
+char* filterstring=NULL;
 int main(int argc, char* argv[])
 {
 	//Connection Conn[1000];
@@ -47,7 +48,7 @@ int main(int argc, char* argv[])
 		fgets(line,MAXLINE,fp[i]);
 		while(fgets(line,MAXLINE,fp[i]))
 		{
-			cout << "readline:" << line << endl;
+			//cout << "readline:" << line << endl;
 			char* noneed;
 			char *proto=new char[4];
 			char *local_addr= new char[30];
@@ -67,23 +68,23 @@ int main(int argc, char* argv[])
 			for(int t=0;t<6;t++)
 				noneed=strtok(NULL," ");
 			sockfd=strtok(NULL," ");
-			cout<<"mychk "
+			/*cout<<"mychk "
 				<<proto<<" "
 				<<local_addr<<" "
 				<<local_port<<" "
 				<<dst_addr<<" "
 				<<dst_port<<" "
 				<<sockfd
-				<<endl;
+				<<endl;*/
 			Conn[conncount]=Connection(proto,local_addr,local_port,dst_addr,dst_port,sockfd);
-			cout<<"after construct"<<endl;
+			//cout<<"after construct"<<endl;
 			conncount++;
 		
 		}
 		fclose(fp[i]);
 	}
 
-	showConnInfo(Conn,conncount);
+	//showConnInfo(Conn,conncount);
 
 	//finding pid
 	DIR* procdir;
@@ -96,20 +97,20 @@ int main(int argc, char* argv[])
 	{
 		if(isdigit(procdirent->d_name[0]))
 		{
-			cout<<"proc's dirent: "<<procdirent->d_ino<<" "<<procdirent->d_off<<" "<<procdirent->d_name<<endl;
+			//cout<<"proc's dirent: "<<procdirent->d_ino<<" "<<procdirent->d_off<<" "<<procdirent->d_name<<endl;
 
 			char fd_path[256];
 			strcpy(fd_path,"/proc/");
 			strcat(fd_path,procdirent->d_name);
 			strcat(fd_path,"/fd");
-			cout<<"path "<<fd_path<<endl;
+			//cout<<"path "<<fd_path<<endl;
 
 			DIR* fd_dir;
 			fd_dir=opendir(fd_path);
 			struct dirent* fd_dirent;
 			if(!(fd_dir=opendir(fd_path)))
 				cout<<"error!"<<endl;
-			fd_dirent=readdir(fd_dir);
+			//fd_dirent=readdir(fd_dir);
 			fd_dirent=readdir(fd_dir);
 			while(fd_dirent=readdir(fd_dir))
 			{
@@ -152,13 +153,13 @@ int main(int argc, char* argv[])
 
 				   linkname[sb.st_size] = '\0';
 
-				   printf("'%s' points to '%s'\n", file_path, linkname);
+				   //printf("'%s' points to '%s'\n", file_path, linkname);
 					char* sockfd = strtok(linkname,"socket:[]");
-					cout<<"extract "<<sockfd<<endl;
+					//cout<<"extract "<<sockfd<<endl;
 
 					finding_match(Conn,sockfd,procdirent->d_name);
-					cout<<"IS socket"<<endl;
-					showConnInfo(Conn,conncount);
+					//cout<<"IS socket"<<endl;
+					//showConnInfo(Conn,conncount);
 					sockcnt++;
 					
 				}
@@ -166,8 +167,8 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	cout<<"sock count"<<sockcnt<<endl;
-	cout<<"mc"<<Matchcnt<<endl;
+	//cout<<"sock count"<<sockcnt<<endl;
+	//cout<<"mc"<<Matchcnt<<endl;
 
 	while(1)
 	{
@@ -183,22 +184,23 @@ int main(int argc, char* argv[])
 			case 't':
 				default_flag=false;
 				tcp_flag=true;
-				cout<<"tcptime"<<endl;
+				//cout<<"tcptime"<<endl;
 				break;
 			case 'u':
 				default_flag=false;
 				udp_flag=true;
-				cout<<"udptime"<<endl;
+				//cout<<"udptime"<<endl;
 				break;
 		}
 	}
 
 	argc-=optind;
 	argv+=optind;
-	cout<<"optind:"<<optind<<" argc:"<<argc<<endl;
+	//cout<<"optind:"<<optind<<" argc:"<<argc<<endl;
 	for(int i=0;i<argc;i++)
 	{
-		printf("argv[%d] = %s\n", optind + i, argv[i]);
+		filterstring=argv[i];
+		//printf("argv[%d] = %s\n", optind + i, argv[i]);
 	}
 	showConnInfo(Conn,conncount);
 }
@@ -208,9 +210,9 @@ void finding_match(Connection *Conn, char* sfd, char* pid)
 	{
 		if(!strcmp(Conn[i].getSockfd(),sfd))
 		{
-			cout<<"t0"<<endl;
+			//cout<<"t0"<<endl;
 			Conn[i].setPid(pid);
-			cout<<"t1"<<endl;
+			//cout<<"t1"<<endl;
 			FILE *fp;
 			char fname[256];
 			strcpy(fname,"/proc/");
@@ -223,7 +225,7 @@ void finding_match(Connection *Conn, char* sfd, char* pid)
 			size_t size = 0;
 			while(getdelim(&arg, &size, 0, cmdline) != -1)
 			{
-				puts(arg);
+			//	puts(arg);
 			  	Conn[i].setPname(arg);
 			  	Conn[i].setPname(" ");
 				if(arg[0]=='/')
@@ -234,8 +236,8 @@ void finding_match(Connection *Conn, char* sfd, char* pid)
 			fclose(cmdline);
 
 
-			cout<<"MATCH, pid="<<pid//<<"pname="<<Conn[i].pro_name
-			<<endl;
+			//cout<<"MATCH, pid="<<pid//<<"pname="<<Conn[i].pro_name
+			//<<endl;
 			Matchcnt++;
 			break;
 		}
@@ -245,7 +247,7 @@ void showConnInfo(Connection *Conn, int cnt)
 {
 	for(int i=0;i<cnt;i++)
 	{
-		Conn[i].showInfo(default_flag,tcp_flag,udp_flag);
+		Conn[i].showInfo(default_flag,tcp_flag,udp_flag,filterstring);
 	}
 }
 
